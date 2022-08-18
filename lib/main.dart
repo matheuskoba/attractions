@@ -27,8 +27,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _countFavorite = 3891;
-
+  bool favorite = false;
   get key => null;
+
+  void _favorite(){
+    setState(() {
+      if(favorite){
+        favorite = false;
+        _countFavorite -= 1;
+      }else{
+        _countFavorite += 1;
+        favorite = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       Container(
                         key: key,
-                        child: const Icon(Icons.star, size: 30, color: Colors.yellow)
+                        child: IconButton(
+                          onPressed: _favorite,
+                          icon: (favorite
+                              ? const Icon(Icons.star)
+                              : const Icon(Icons.star_border)),
+                          color: Colors.yellow,
+                        )
                       ),
                       Container(
                         key: key,
@@ -86,39 +104,9 @@ class _MyHomePageState extends State<MyHomePage> {
               key: key,
               child: Row(
                 children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: (){},
-                      child: Column(
-                        children: const [
-                          Icon(Icons.call, color: Colors.blue),
-                          Text('Ligar')
-                        ],
-                      )
-                    )
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: (){},
-                        child: Column(
-                          children: const [
-                            Icon(Icons.location_on, color: Colors.blue),
-                            Text('Mapa')
-                          ],
-                        )
-                    ),
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: (){},
-                        child: Column(
-                          children: const [
-                            Icon(Icons.share, color: Colors.blue),
-                            Text('Compartilhar')
-                          ],
-                        )
-                    ),
-                  )
+                  Button(text: 'Ligar', icon: Icons.call, action: (){},),
+                  Button(text: 'Mapa', icon: Icons.location_on, action: (){}),
+                  Button(text: 'Compartilhar', icon: Icons.share, action: (){})
                 ]
               )
             ),
@@ -135,48 +123,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-//       body: Center(
-//         // Center is a layout widget. It takes a single child and positions it
-//         // in the middle of the parent.
-//         child: Column(
-//           // Column is also a layout widget. It takes a list of children and
-//           // arranges them vertically. By default, it sizes itself to fit its
-//           // children horizontally, and tries to be as tall as its parent.
-//           //
-//           // Invoke "debug painting" (press "p" in the console, choose the
-//           // "Toggle Debug Paint" action from the Flutter Inspector in Android
-//           // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-//           // to see the wireframe for each widget.
-//           //
-//           // Column has various properties to control how it sizes itself and
-//           // how it positions its children. Here we use mainAxisAlignment to
-//           // center the children vertically; the main axis here is the vertical
-//           // axis because Columns are vertical (the cross axis would be
-//           // horizontal).
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             const Text(
-//               'You have pushed the button this many times:',
-//             ),
-//             Text(
-//               '$_counter',
-//               style: Theme.of(context).textTheme.headline4,
-//             ),
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: _incrementCounter,
-//         tooltip: 'Increment',
-//         child: const Icon(Icons.add),
-//       ), // This trailing comma makes auto-formatting nicer for build methods.
-//     );
-//   }
-// }
+class Button extends StatelessWidget {
+  const Button({Key? key, required this.text, required this.icon, required this.action}) : super(key: key);
 
+  final String text;
+  final IconData icon;
+  final Function action;
 
-// _incrementCounter() {
-//     setState(() {
-//       _counter++;
-//     });
-//   }
+  @override
+  Widget build(BuildContext context){
+    return Expanded(
+        child: TextButton(
+            onPressed: action(),
+            child: Column(
+              children: [
+                Icon(icon, color: Colors.blue),
+                Text(text)
+              ],
+            )
+        )
+    );
+  }
+}
